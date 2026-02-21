@@ -623,7 +623,7 @@
         const db = getFirestore(app);
         const solicitudesRef = collection(db, "solicitudes");
 
-        /***** Código original de tu app *****/
+        /***** Código de la app *****/
         const tiendas = [
             {codigo: '50TPE', nombre: 'Tepic-Mexico GDL', zona: 'Local'},
             {codigo: '50VKG', nombre: 'Tepic JuanEscutiaGDL', zona: 'Local'},
@@ -756,7 +756,7 @@
                     <div style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid var(--color-border);" 
                          onmouseover="this.style.backgroundColor='var(--color-secondary)'" 
                          onmouseout="this.style.backgroundColor='transparent'"
-                         onclick="window.selectTienda('${tienda.codigo}', '${tienda.nombre.replace(/'/g, "\\'")}', '${tienda.zona}')"
+                         onclick="window.selectTienda('${tienda.codigo}', '${tienda.nombre.replace(/'/g, "\\'")}', '${tienda.zona}')">
                         <strong>${tienda.codigo}</strong> - ${tienda.nombre}
                     </div>
                 `).join('');
@@ -822,13 +822,12 @@
                 const data = d.data();
                 solicitudes.push({
                     ...data,
-                    id: data.id || d.id  // usamos id guardado o el de Firestore
+                    id: data.id || d.id
                 });
             });
         }
 
         async function saveSolicitudFirestore(solicitud) {
-            // Si ya tiene id tipo Firestore (string largo), actualizamos; si no, agregamos
             if (typeof solicitud.id === "string") {
                 const ref = doc(db, "solicitudes", solicitud.id);
                 await updateDoc(ref, solicitud);
@@ -839,7 +838,7 @@
         }
 
         async function updateCampoFirestore(id, campos) {
-            if (typeof id !== "string") return; // si aún es numérico (solo local)
+            if (typeof id !== "string") return;
             const ref = doc(db, "solicitudes", id);
             await updateDoc(ref, campos);
         }
@@ -1095,11 +1094,10 @@
             document.body.removeChild(link);
         }
 
-        document.getElementById('zona').addEventListener('change', actualizarResponsablePorZona);
-
         document.getElementById('solicitudForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+            console.log('ENVIANDO FORMULARIO');
+
             if (!selectedTiendaData) {
                 alert('Por favor selecciona una tienda válida de la lista');
                 return;
@@ -1135,7 +1133,6 @@
 
             const ahora = new Date();
             const nuevaSolicitud = {
-                // id será asignado por Firestore; guardamos temporalmente timestamp
                 codigoTienda: tiendaData.codigo,
                 nombreTienda: tiendaData.nombre,
                 zonaTienda: tiendaData.zona,
@@ -1159,7 +1156,7 @@
                 nuevaSolicitud.id = ref.id;
             } catch (err) {
                 console.error("Error guardando en Firestore, se queda solo local:", err);
-                nuevaSolicitud.id = Date.now(); // fallback local
+                nuevaSolicitud.id = Date.now();
             }
 
             solicitudes.unshift(nuevaSolicitud);
@@ -1212,6 +1209,7 @@
         }
 
         setupTiendaAutocomplete();
+        document.getElementById('zona').addEventListener('change', actualizarResponsablePorZona);
         init();
     </script>
 </body>
