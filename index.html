@@ -726,7 +726,7 @@
 			{codigo: '504', nombre: 'San Blas Pista', zona: 'Foránea'},		
         ];
 
-        window.solicitudes = [];
+        let solicitudes = [];
 
 		// ===== MÉTRICAS POR ZONA / TIENDA =====
 function calcularMetricasPorZonaYTienda() {
@@ -816,7 +816,7 @@ window.renderMetrics = function () {
         topTiendasList.appendChild(li);
     });
 };
-		window.solicitudes = []	
+		let solicitudes = []	
 	    let currentFilter = 'all';
 	let currentResponsableFilter = 'all';
         let selectedTiendaData = null;
