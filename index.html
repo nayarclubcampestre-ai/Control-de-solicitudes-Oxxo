@@ -913,6 +913,7 @@ let solicitudEnSeguimiento = null;
             const stored = localStorage.getItem('solicitudesOXXO');
             if (stored) {
                 solicitudes = JSON.parse(stored);
+				window.solicitudes = solicitudes;
 				renderMetrics();
             }
         }
@@ -931,6 +932,7 @@ let solicitudEnSeguimiento = null;
                     id: data.id || d.id  // usamos id guardado o el de Firestore
                 });
             });
+		window.solicitudes = solicitudes;	
         renderMetrics(); //
 		}
 
