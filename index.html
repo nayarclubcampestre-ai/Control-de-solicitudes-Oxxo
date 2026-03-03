@@ -869,24 +869,6 @@ function renderMetrics() {
         zonaContainer.appendChild(card);
     });
 
-    // Top tiendas con más pendientes
-    const tiendasArray = Object.values(metricas.porTienda)
-        .filter(t => t.pendientes > 0)
-        .sort((a, b) => b.pendientes - a.pendientes)
-        .slice(0, 5);
-
-    tiendasArray.forEach(t => {
-        const li = document.createElement('li');
-        li.style.marginBottom = '4px';
-
-        li.textContent =
-            `${t.codigo} - ${t.nombre} (${t.zona}) - ` +
-            `Pendientes: ${t.pendientes}, Urgentes: ${t.urgentes}`;
-
-        topTiendasList.appendChild(li);
-    });
-}
-
     // Top tiendas con más pendientes (solo las que tengan al menos 1 pendiente)
     const tiendasArray = Object.values(metricas.porTienda)
         .filter(t => t.pendientes > 0)
