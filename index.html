@@ -726,9 +726,9 @@
 			{codigo: '504', nombre: 'San Blas Pista', zona: 'Foránea'},		
         ];
 
-        let solicitudes = [];
+// ===== MÉTRICAS POR ZONA / TIENDA =====
+let solicitudes = [];
 
-		// ===== MÉTRICAS POR ZONA / TIENDA =====
 function calcularMetricasPorZonaYTienda() {
     const metricas = {
         porZona: {},
@@ -816,12 +816,12 @@ window.renderMetrics = function () {
         topTiendasList.appendChild(li);
     });
 };
-		
-		let solicitudes = []	
-	    let currentFilter = 'all';
-	let currentResponsableFilter = 'all';
-        let selectedTiendaData = null;
-        let solicitudEnSeguimiento = null;
+
+// AQUÍ YA NO REPITAS solicitudes:
+let currentFilter = 'all';
+let currentResponsableFilter = 'all';
+let selectedTiendaData = null;
+let solicitudEnSeguimiento = null;
 
         const responsablesLocales = [
             'Victor Salazar',
