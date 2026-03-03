@@ -590,23 +590,57 @@
         </div>
     </div>
 
-	<!-- MÉTRICAS POR ZONA / TIENDA -->
-<section id="metricsSection" style="margin-top: 20px;">
-  <h2>Métricas por zona / tienda</h2>
+	// ===== MÉTRICAS POR ZONA / TIENDA =====
 
-  <!-- Tarjetas por zona -->
-  <div id="zonaMetrics" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-    <!-- Se llena por JS -->
-  </div>
+// Calcula totales por zona y por tienda a partir de "solicitudes"
+function calcularMetricasPorZonaYTienda() {
+    const metricas = {
+        porZona: {},   // { 'Local': { total, pendientes, urgentes } ... }
+        porTienda: {}  // { '50CLS': { codigo, nombre, zona, total, pendientes, urgentes } ... }
+    };
 
-  <!-- Top tiendas -->
-  <div>
-    <h3>Top tiendas con más pendientes</h3>
-    <ul id="topTiendasList" style="list-style: none; padding-left: 0;">
-      <!-- Se llena por JS -->
-    </ul>
-  </div>
-</section>
+    solicitudes.forEach(s => {
+        // usamos SIEMPRE los mismos campos que en el resto de tu app
+        const zona = s.zona || 'Sin zona';
+        const codigo = s.codigoTienda || 'Sin código';
+        const nombreTienda = s.nombreTienda || codigo;
+        const estado = s.estado || 'Pendiente';
+        const prioridad = s.prioridad || 'Normal';
+
+        // ----- por zona -----
+        if (!metricas.porZona[zona]) {
+            metricas.porZona[zona] = { total: 0, pendientes: 0, urgentes: 0 };
+        }
+        metricas.porZona[zona].total += 1;
+        if (estado !== 'Completado') {
+            metricas.porZona[zona].pendientes += 1;
+        }
+        if (prioridad.toLowerCase() === 'urgente') {
+            metricas.porZona[zona].urgentes += 1;
+        }
+
+        // ----- por tienda -----
+        if (!metricas.porTienda[codigo]) {
+            metricas.porTienda[codigo] = {
+                codigo: codigo,
+                nombre: nombreTienda,
+                zona: zona,
+                total: 0,
+                pendientes: 0,
+                urgentes: 0
+            };
+        }
+        metricas.porTienda[codigo].total += 1;
+        if (estado !== 'Completado') {
+            metricas.porTienda[codigo].pendientes += 1;
+        }
+        if (prioridad.toLowerCase() === 'urgente') {
+            metricas.porTienda[codigo].urgentes += 1;
+        }
+    });
+
+    return metricas;
+}
 	
     <!-- Modal de seguimiento -->
     <div id="seguimientoModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:2000; align-items:center; justify-content:center;">
@@ -808,6 +842,9 @@ function renderMetrics() {
     zonaContainer.innerHTML = '';
     topTiendasList.innerHTML = '';
 
+    // Si no hay solicitudes, no pintamos nada
+    if (solicitudes.length === 0) return;
+
     // Tarjetas por zona
     Object.keys(metricas.porZona).forEach(zona => {
         const data = metricas.porZona[zona];
@@ -817,7 +854,10 @@ function renderMetrics() {
         card.style.borderRadius = '6px';
         card.style.padding = '10px';
         card.style.minWidth = '180px';
-        card.style.backgroundColor = zona.toLowerCase().includes('foránea') ? '#ffe4e1' : '#e6f7ff';
+        card.style.marginBottom = '8px';
+        card.style.backgroundColor = zona.toLowerCase().includes('foránea')
+            ? '#ffe4e1'
+            : '#e6f7ff';
 
         card.innerHTML = `
             <h4 style="margin: 0 0 5px 0;">Zona: ${zona}</h4>
@@ -828,6 +868,24 @@ function renderMetrics() {
 
         zonaContainer.appendChild(card);
     });
+
+    // Top tiendas con más pendientes
+    const tiendasArray = Object.values(metricas.porTienda)
+        .filter(t => t.pendientes > 0)
+        .sort((a, b) => b.pendientes - a.pendientes)
+        .slice(0, 5);
+
+    tiendasArray.forEach(t => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '4px';
+
+        li.textContent =
+            `${t.codigo} - ${t.nombre} (${t.zona}) - ` +
+            `Pendientes: ${t.pendientes}, Urgentes: ${t.urgentes}`;
+
+        topTiendasList.appendChild(li);
+    });
+}
 
     // Top tiendas con más pendientes (solo las que tengan al menos 1 pendiente)
     const tiendasArray = Object.values(metricas.porTienda)
