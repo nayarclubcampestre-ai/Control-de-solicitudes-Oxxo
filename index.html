@@ -938,6 +938,7 @@ function renderMetrics() {
             const stored = localStorage.getItem('solicitudesOXXO');
             if (stored) {
                 solicitudes = JSON.parse(stored);
+				renderMetrics();
             }
         }
 
