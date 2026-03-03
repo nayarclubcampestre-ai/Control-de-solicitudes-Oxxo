@@ -755,10 +755,10 @@ function calcularMetricasPorZonaYTienda() {
 
     solicitudes.forEach(s => {
         const zona = s.zona || 'Sin zona';
-        const codigo = s.codigoTienda || s.codigo || 'Sin código';
-        const nombreTienda = s.nombreTienda || s.nombre || codigo;
-        const estado = s.estado || 'Pendiente'; // ajusta si usas otro campo
-        const prioridad = s.prioridad || s.tipoPrioridad || 'Normal';
+        const codigo = s.codigoTienda || 'Sin código';
+		const nombreTienda = s.nombreTienda || codigo;
+		const estado = s.estado || 'Pendiente';
+		const prioridad = s.prioridad || 'Normal';
 
         // Inicializar zona
         if (!metricas.porZona[zona]) {
@@ -775,7 +775,8 @@ function calcularMetricasPorZonaYTienda() {
         // Inicializar tienda
         if (!metricas.porTienda[codigo]) {
             metricas.porTienda[codigo] = {
-                nombre: nombreTienda,
+                codigo: codigo,
+				nombre: nombreTienda,
                 zona: zona,
                 total: 0,
                 pendientes: 0,
