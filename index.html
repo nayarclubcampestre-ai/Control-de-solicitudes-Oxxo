@@ -931,7 +931,8 @@ let solicitudEnSeguimiento = null;
                     id: data.id || d.id  // usamos id guardado o el de Firestore
                 });
             });
-        }
+        renderMetrics(); //
+		}
 
         async function saveSolicitudFirestore(solicitud) {
             // Si ya tiene id tipo Firestore (string largo), actualizamos; si no, agregamos
