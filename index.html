@@ -767,7 +767,7 @@ function calcularMetricasPorZonaYTienda() {
     return metricas;
 }
 
-function renderMetrics() {
+window.renderMetrics = function () {
     const zonaContainer = document.getElementById('zonaMetrics');
     const topTiendasList = document.getElementById('topTiendasList');
     if (!zonaContainer || !topTiendasList) return;
